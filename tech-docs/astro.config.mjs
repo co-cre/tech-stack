@@ -39,7 +39,30 @@ export default defineConfig({
 				},
 				{
 					label: '実装パターン',
-					autogenerate: { directory: 'patterns' },
+					items: [
+						{
+							label: '共通',
+							items: [
+								{ label: 'Result型', link: '/patterns/01-result' },
+								{ label: '環境変数', link: '/patterns/04-env' },
+							],
+						},
+						{
+							label: 'API層',
+							items: [
+								{ label: 'APIレスポンス', link: '/patterns/02-api-response' },
+								{ label: 'リポジトリ層', link: '/patterns/03-repository' },
+							],
+						},
+						{
+							label: 'フロント層',
+							items: [
+								{ label: 'URLパラメータの型付け', link: '/patterns/05-url-params' },
+								{ label: 'Container / Presentation', link: '/patterns/06-container-presentation' },
+							],
+						},
+						{ label: 'テスト', link: '/patterns/07-testing' },
+					],
 				},
 				{
 					label: '技術選定の記録',
