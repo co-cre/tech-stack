@@ -9,9 +9,10 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'Tech Stack',
-			defaultLocale: 'ja',
+			defaultLocale: 'root',
 			locales: {
-				ja: { label: '日本語' },
+				root: { label: '日本語', lang: 'ja' },
+				en: { label: 'English' },
 			},
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/co-cre/tech-stack' }],
 			sidebar: [
