@@ -44,6 +44,7 @@ export default defineConfig({
 								{ label: 'React Hook Form', link: '/decisions/04-react-hook-form' },
 								{ label: 'Result型', link: '/decisions/05-result-pattern' },
 								{ label: 'date-fns', link: '/decisions/06-date-fns' },
+								{ label: 'Drizzle', link: '/decisions/07-drizzle' },
 							],
 						},
 					],
@@ -63,6 +64,7 @@ export default defineConfig({
 							items: [
 								{ label: 'レスポンス', link: '/patterns/02-api-response' },
 								{ label: 'リポジトリ層', link: '/patterns/03-repository' },
+								{ label: 'マイグレーション', link: '/patterns/09-migration' },
 							],
 						},
 						{
