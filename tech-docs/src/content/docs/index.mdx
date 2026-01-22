@@ -1,54 +1,23 @@
 ---
-title: 株式会社コクリ 技術スタック
+title: はじめに
 description: 技術スタックの選定理由と実装パターン
-template: splash
-hero:
-  tagline: Simple over Easy - 技術選定の透明性を高め、チーム全体で共有する
-  actions:
-    - text: 技術スタック
-      link: /stack/01-core/
-      icon: right-arrow
-    - text: 実装パターン
-      link: /patterns/01-result/
-      icon: right-arrow
-      variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
-## 設計指針
-
-### Simple vs Easy
-
-「Easy（簡単）」ではなく「Simple（単純）」を選ぶ。
-
-| Simple | Easy |
-|--------|------|
-| 概念が少ない | 便利な機能が多い |
-| 依存が少ない | 抽象化が厚い |
-| 理解しやすい | 学習コストが低い（最初だけ） |
-| デバッグしやすい | 魔法が多い |
-
-### 原則
-
-1. **必要になったら足す**: 最初から入れない。辛くなったら足す
-2. **Web標準に寄せる**: 独自APIより標準API
-3. **依存を減らす**: ライブラリは厳選
-4. **IFに対してテスト**: 実装詳細ではなく公開インターフェースをテスト
-5. **外部IOは型で守る**: URLパラメータ、APIレスポンス等はzodでバリデーション
+**Simple over Easy** - 技術選定の透明性を高め、チーム全体で共有する
 
 ---
 
-## コンテンツ
+## このドキュメントの読み方
 
-<CardGrid>
-  <Card title="技術スタック" icon="laptop">
-    コア技術、フロントエンド、品質・運用の選定
-  </Card>
-  <Card title="実装パターン" icon="document">
-    Result型、Container/Presentation、リポジトリ層など
-  </Card>
-  <Card title="選定ガイド" icon="setting">
-    DB、認証の選定基準
-  </Card>
-</CardGrid>
+| 知りたいこと | セクション | 内容 |
+|-------------|-----------|------|
+| 「何使ってるの？」 | [技術スタック](/tech-stack/stack/01-overview/) | 技術一覧・選定理由 |
+| 「どう書くの？」 | [実装パターン](/tech-stack/patterns/01-result/) | コード例・実装定石 |
+| 「なんでこれ？」 | [原則](/tech-stack/principles/01-simple-vs-easy/) | 判断基準・設計思想 |
+| 「案件で迷う」 | [ガイド](/tech-stack/guides/01-db/) | DB/認証/デプロイ選定 |
+
+---
+
+
