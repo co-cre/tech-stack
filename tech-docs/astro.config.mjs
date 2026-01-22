@@ -27,9 +27,13 @@ export default defineConfig({
 					],
 				},
 				{
-					label: 'スタック',
+					label: '技術スタック',
 					items: [
-						{ label: '一覧', link: '/stack/01-overview' },
+						{ label: '全体像', link: '/stack/01-overview' },
+						{ label: '共通', link: '/stack/02-common' },
+						{ label: 'API', link: '/stack/03-api' },
+						{ label: 'フロントエンド', link: '/stack/04-frontend' },
+						{ label: 'テスト', link: '/stack/05-testing' },
 						{
 							label: '選定理由',
 							collapsed: true,
@@ -45,7 +49,7 @@ export default defineConfig({
 					],
 				},
 				{
-					label: 'パターン',
+					label: '実装パターン',
 					items: [
 						{
 							label: '共通',

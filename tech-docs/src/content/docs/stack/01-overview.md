@@ -1,25 +1,7 @@
 ---
-title: 技術スタック一覧
-description: 採用技術のサマリ
+title: 全体像
+description: 技術スタックの全体構成
 ---
-
-## 一覧
-
-| カテゴリ | 技術 | 用途 |
-|----------|------|------|
-| ランタイム | Bun | JS実行、パッケージ管理、テスト |
-| API | Hono | Web標準APIフレームワーク |
-| ORM | Drizzle | 型安全なDB操作 |
-| フロント | Vite + React | ビルド + UI |
-| ルーティング | React Router | SPA ルーティング |
-| 状態管理 | React Query | サーバー状態管理 |
-| フォーム | react-hook-form | フォームバリデーション |
-| バリデーション | zod | スキーマ定義・型生成 |
-| CSS | Tailwind | ユーティリティファースト |
-| UI | shadcn/ui | コンポーネントライブラリ |
-| 日付 | date-fns | 日付操作 |
-| Lint/Format | Biome | ESLint + Prettier代替 |
-| テスト | Bun test | Jest互換テストランナー |
 
 ## アーキテクチャ
 
@@ -45,8 +27,6 @@ description: 採用技術のサマリ
 - **型安全**: zodでエンドツーエンドの型安全を実現
 - **軽量**: 重いフレームワークを避け、必要なものだけ
 - **Simple over Easy**: 魔法より理解しやすさを重視
-
----
 
 ## ディレクトリ構成
 
