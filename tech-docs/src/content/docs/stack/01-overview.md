@@ -33,37 +33,33 @@ description: 技術スタックの全体構成
 ```
 monorepo/
 ├── apps/
-│   ├── web/                    # フロントエンド（Vite + React）
-│   │   ├── src/
-│   │   │   ├── features/       # 機能単位
-│   │   │   │   └── users/
-│   │   │   │       ├── UserList.tsx              # エントリ（Suspense境界）
-│   │   │   │       ├── UserList.container.tsx    # データ取得・更新
-│   │   │   │       ├── UserList.presentation.tsx # 純粋なUI
-│   │   │   │       └── hooks.ts
-│   │   │   ├── lib/            # ユーティリティ
-│   │   │   │   ├── api.ts      # Hono RPCクライアント
-│   │   │   │   ├── env.ts      # 環境変数
-│   │   │   │   └── params.ts   # useTypedParams, useTypedSearch
-│   │   │   └── components/     # 共通コンポーネント
-│   │   └── test/
-│   └── api/                    # バックエンド（Hono）
-│       ├── src/
-│       │   ├── index.ts
-│       │   ├── routes/
-│       │   ├── repo/           # リポジトリ層
-│       │   │   ├── interface.ts
-│       │   │   ├── d1.ts
-│       │   │   └── memory.ts   # テスト用
-│       │   └── lib/
-│       │       ├── env.ts
-│       │       └── response.ts # okResponse, errorResponse
-│       └── test/
+│   ├── web/
+│   ├── admin/
+│   ├── lp/
+│   ├── api/
+│   ├── batch/
+│   └── jobs/
 ├── packages/
-│   └── shared/                 # 共通コード
-│       ├── result.ts           # Result型
-│       ├── error.ts            # AppError
-│       └── schema/             # 共通zodスキーマ
-├── bunfig.toml
-└── biome.json
+│   ├── db/
+│   ├── types/
+│   └── utils/
+└── 設定ファイル群
 ```
+
+**apps/**: デプロイ可能なアプリケーション
+**packages/**: 共有ライブラリ（複数アプリから参照）
+
+| アプリ | 役割 | 詳細 |
+|--------|------|------|
+| web | ユーザー向けSPA | [フロントエンド](./04-frontend) |
+| admin | 管理画面 | [フロントエンド](./04-frontend) |
+| lp | ランディングページ | [フロントエンド](./04-frontend) |
+| api | APIサーバー | [API](./03-api) |
+| batch | 定期実行（Cron） | 後日追加 |
+| jobs | Queue consumer | 後日追加 |
+
+| パッケージ | 中身 |
+|-----------|------|
+| db | Drizzleスキーマ、マイグレーション |
+| types | 共通型定義、zodスキーマ |
+| utils | Result型、AppError、ユーティリティ |

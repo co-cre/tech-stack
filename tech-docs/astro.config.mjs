@@ -43,7 +43,6 @@ export default defineConfig({
 								{ label: 'Hono', link: '/decisions/02-hono' },
 								{ label: 'React Router', link: '/decisions/03-react-router' },
 								{ label: 'React Hook Form', link: '/decisions/04-react-hook-form' },
-								{ label: 'Result型', link: '/decisions/05-result-pattern' },
 								{ label: 'date-fns', link: '/decisions/06-date-fns' },
 								{ label: 'Drizzle', link: '/decisions/07-drizzle' },
 							],
@@ -68,6 +67,11 @@ export default defineConfig({
 								{ label: 'リポジトリ層', link: '/patterns/03-repository' },
 								{ label: 'マイグレーション', link: '/patterns/09-migration' },
 								{ label: 'テスト', link: '/patterns/10-api-testing' },
+								{ label: '認証ミドルウェア', link: '/patterns/12-auth-middleware' },
+								{ label: '認可', link: '/patterns/13-authorization' },
+								{ label: 'エラーコード', link: '/patterns/14-error-codes' },
+								{ label: 'エンドポイント命名', link: '/patterns/15-endpoint-naming' },
+								{ label: 'バージョニング', link: '/patterns/16-api-versioning' },
 							],
 						},
 						{
@@ -82,11 +86,33 @@ export default defineConfig({
 					],
 				},
 				{
+					label: '運用',
+					items: [
+						{ label: 'オブザーバビリティ概要', link: '/operations/00-observability' },
+						{ label: 'ロギング', link: '/operations/01-logging' },
+						{ label: 'エラートラッキング', link: '/operations/02-error-tracking' },
+						{ label: 'モニタリング', link: '/operations/03-monitoring' },
+						{ label: '障害対応', link: '/operations/04-incident-response' },
+						{ label: '依存関係管理', link: '/operations/06-dependency-management' },
+					],
+				},
+				{
+					label: 'セキュリティ',
+					items: [
+						{ label: 'シークレット管理', link: '/security/01-secrets' },
+						{ label: 'CORS/CSP', link: '/security/02-cors-csp' },
+						{ label: '入力検証', link: '/security/03-input-validation' },
+						{ label: 'チェックリスト', link: '/security/04-checklist' },
+					],
+				},
+				{
 					label: 'ガイド',
 					items: [
 						{ label: 'DB選定', link: '/guides/01-db' },
 						{ label: '認証選定', link: '/guides/02-auth' },
 						{ label: 'デプロイ選定', link: '/guides/03-deploy' },
+						{ label: 'ローカルセットアップ', link: '/guides/04-local-setup' },
+						{ label: '環境分離', link: '/guides/05-env-separation' },
 						{
 							label: 'AI向けコンテキスト',
 							items: [

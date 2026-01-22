@@ -3,6 +3,26 @@ title: フロントエンド
 description: フロントエンド技術スタック
 ---
 
+## ディレクトリ構造
+
+```
+apps/web/  # admin/, lp/ も同様
+├── src/
+│   ├── features/           # 機能単位（Feature-based）
+│   │   └── users/
+│   │       ├── UserList.tsx              # エントリ（Suspense境界）
+│   │       ├── UserList.container.tsx    # データ取得・更新
+│   │       ├── UserList.presentation.tsx # 純粋なUI
+│   │       └── hooks.ts
+│   ├── components/         # 共通UIコンポーネント
+│   ├── lib/                # ユーティリティ
+│   │   ├── api.ts          # Hono RPCクライアント
+│   │   ├── env.ts          # 環境変数
+│   │   └── params.ts       # useTypedParams等
+│   └── routes/             # ページコンポーネント
+└── test/
+```
+
 ## 一覧
 
 | 技術 | 用途 | 選定理由 |

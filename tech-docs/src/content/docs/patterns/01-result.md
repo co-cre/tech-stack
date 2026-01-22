@@ -5,6 +5,38 @@ description: 例外を使わないエラーハンドリング
 
 `ok/err` パターンで型安全にエラーを表現。
 
+## Result型 vs throw
+
+| 観点 | Result型 | throw |
+|------|----------|-------|
+| 型安全性 | エラーが型で表現される | 型情報なし（unknown） |
+| ハンドリング強制 | 分岐しないと値を取れない | catchしなくても動く |
+| 可読性 | フラットな分岐 | try-catchのネスト |
+| パフォーマンス | オブジェクト生成のみ | スタックトレース生成 |
+
+### throwが適切なケース
+
+- **回復不能なエラー**: プログラムのバグ、設定ミス
+- **境界での検証**: 外部入力のバリデーション失敗
+
+```ts
+// 回復不能 → throw
+const config = JSON.parse(process.env.CONFIG!)
+if (!config.apiKey) throw new Error('CONFIG.apiKey is required')
+
+// 回復可能 → Result
+const result = await api.fetchUser(id)
+if (!result.ok) return err(result.error)
+```
+
+### 判断基準
+
+```
+呼び出し側が回復できる？
+  → Yes: Result型
+  → No: throw
+```
+
 ## 実装
 
 ```ts

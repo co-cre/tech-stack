@@ -3,6 +3,25 @@ title: API
 description: バックエンド技術スタック
 ---
 
+## ディレクトリ構造
+
+```
+apps/api/
+├── src/
+│   ├── index.ts            # エントリポイント
+│   ├── routes/             # ルート定義
+│   │   ├── users.ts
+│   │   └── posts.ts
+│   ├── repo/               # リポジトリ層
+│   │   ├── interface.ts    # インターフェース
+│   │   ├── d1.ts           # D1実装
+│   │   └── memory.ts       # テスト用インメモリ
+│   └── lib/                # ユーティリティ
+│       ├── env.ts
+│       └── response.ts     # okResponse, errorResponse
+└── test/
+```
+
 ## 一覧
 
 | 技術 | 用途 | 選定理由 |
