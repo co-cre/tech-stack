@@ -5,7 +5,7 @@ import starlight from '@astrojs/starlight';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://co-cre.github.io',
-	base: '/',
+	base: '/tech-stack',
 	integrations: [
 		starlight({
 			title: 'Tech Stack',
