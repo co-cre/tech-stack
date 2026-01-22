@@ -9,11 +9,6 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'Tech Stack',
-			defaultLocale: 'root',
-			locales: {
-				root: { label: '日本語', lang: 'ja' },
-				en: { label: 'English' },
-			},
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/co-cre/tech-stack' }],
 			sidebar: [
 				{ label: 'はじめに', link: '/' },
@@ -58,6 +53,7 @@ export default defineConfig({
 								{ label: 'Result型', link: '/patterns/01-result' },
 								{ label: '環境変数', link: '/patterns/04-env' },
 								{ label: 'テスト方針', link: '/patterns/07-testing' },
+								{ label: 'switch網羅性チェック', link: '/patterns/21-switch-exhaustiveness' },
 							],
 						},
 						{
@@ -66,6 +62,7 @@ export default defineConfig({
 								{ label: 'レスポンス', link: '/patterns/02-api-response' },
 								{ label: 'リポジトリ層', link: '/patterns/03-repository' },
 								{ label: 'ドメイン層', link: '/patterns/17-domain' },
+								{ label: '状態遷移', link: '/patterns/22-state-transition' },
 								{ label: 'ユースケース層', link: '/patterns/18-usecase' },
 								{ label: 'トランザクション', link: '/patterns/19-transaction' },
 								{ label: '冪等性', link: '/patterns/20-idempotency' },
