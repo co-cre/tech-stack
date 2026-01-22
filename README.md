@@ -1,8 +1,17 @@
 # Tech Stack
 
-技術スタックの選定理由と代替案を共有するドキュメントサイト。
+チームの技術スタック選定理由と設計方針を共有するリポジトリ。
 
-## 開発
+## 構成
+
+| ディレクトリ | 説明 |
+|-------------|------|
+| `tech-docs/` | 技術ドキュメントサイト (Starlight/Astro) |
+| `template/` | Webアプリテンプレート集 (予定) |
+
+## 技術ドキュメント
+
+### 開発
 
 ```bash
 cd tech-docs
@@ -10,13 +19,13 @@ bun install
 bun dev
 ```
 
-## デプロイ
+### デプロイ
 
-mainブランチにpushすると自動でGitHub Pagesにデプロイされる。
+mainブランチにpushすると自動でGitHub Pagesにデプロイ。
 
 https://co-cre.github.io/tech-stack/
 
-## コンテンツの追加
+### コンテンツの追加
 
 `tech-docs/src/content/docs/` に技術ページを追加:
 
@@ -38,3 +47,12 @@ description: 簡単な説明
 | 代替案A | 理由 |
 | 代替案B | 理由 |
 ```
+
+## テンプレート
+
+`template/` にWebアプリケーションの雛形を配置予定。
+
+- SPA
+- SSR
+- API Server
+- etc.

@@ -16,20 +16,16 @@ export default defineConfig({
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/co-cre/tech-stack' }],
 			sidebar: [
 				{
-					label: 'Frontend',
-					autogenerate: { directory: 'frontend' },
+					label: '技術スタック',
+					autogenerate: { directory: 'stack' },
 				},
 				{
-					label: 'Backend',
-					autogenerate: { directory: 'backend' },
+					label: '実装パターン',
+					autogenerate: { directory: 'patterns' },
 				},
 				{
-					label: 'Infrastructure',
-					autogenerate: { directory: 'infrastructure' },
-				},
-				{
-					label: 'DevOps',
-					autogenerate: { directory: 'devops' },
+					label: '選定ガイド',
+					autogenerate: { directory: 'guides' },
 				},
 			],
 		}),
