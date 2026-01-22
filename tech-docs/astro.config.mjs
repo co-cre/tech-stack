@@ -58,6 +58,7 @@ export default defineConfig({
 							items: [
 								{ label: 'Result型', link: '/patterns/01-result' },
 								{ label: '環境変数', link: '/patterns/04-env' },
+								{ label: 'テスト方針', link: '/patterns/07-testing' },
 							],
 						},
 						{
@@ -66,6 +67,7 @@ export default defineConfig({
 								{ label: 'レスポンス', link: '/patterns/02-api-response' },
 								{ label: 'リポジトリ層', link: '/patterns/03-repository' },
 								{ label: 'マイグレーション', link: '/patterns/09-migration' },
+								{ label: 'テスト', link: '/patterns/10-api-testing' },
 							],
 						},
 						{
@@ -74,9 +76,9 @@ export default defineConfig({
 								{ label: 'URLパラメータ', link: '/patterns/05-url-params' },
 								{ label: 'Container / Presentation', link: '/patterns/06-container-presentation' },
 								{ label: 'フォーム', link: '/patterns/08-form' },
+								{ label: 'テスト', link: '/patterns/11-frontend-testing' },
 							],
 						},
-						{ label: 'テスト', link: '/patterns/07-testing' },
 					],
 				},
 				{
