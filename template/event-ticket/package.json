@@ -1,0 +1,19 @@
+{
+	"name": "event-ticket",
+	"private": true,
+	"workspaces": ["apps/*", "packages/*"],
+	"scripts": {
+		"dev": "bun run --filter '*' dev",
+		"dev:api": "bun run --filter api dev",
+		"dev:web": "bun run --filter web dev",
+		"build": "bun run --filter '*' build",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"db:generate": "bun run --filter db generate",
+		"db:migrate": "bun run --filter db migrate"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"typescript": "^5.7.2"
+	}
+}
