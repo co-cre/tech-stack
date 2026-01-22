@@ -46,12 +46,44 @@ description: 採用技術のサマリ
 - **軽量**: 重いフレームワークを避け、必要なものだけ
 - **Simple over Easy**: 魔法より理解しやすさを重視
 
-## 詳細
+---
 
-各技術の詳細は以下を参照:
+## ディレクトリ構成
 
-- [コア技術](/tech-stack/stack/02-core/) - Bun, Hono, Drizzle
-- [型・バリデーション](/tech-stack/stack/03-type-validation/) - zod, Hono RPC
-- [フロントエンド](/tech-stack/stack/04-frontend/) - React Router, React Query, shadcn/ui
-- [品質・運用](/tech-stack/stack/05-quality/) - Biome, テスト, Result型
-- [ディレクトリ構成](/tech-stack/stack/06-structure/) - モノレポ構造
+```
+monorepo/
+├── apps/
+│   ├── web/                    # フロントエンド（Vite + React）
+│   │   ├── src/
+│   │   │   ├── features/       # 機能単位
+│   │   │   │   └── users/
+│   │   │   │       ├── UserList.tsx              # エントリ（Suspense境界）
+│   │   │   │       ├── UserList.container.tsx    # データ取得・更新
+│   │   │   │       ├── UserList.presentation.tsx # 純粋なUI
+│   │   │   │       └── hooks.ts
+│   │   │   ├── lib/            # ユーティリティ
+│   │   │   │   ├── api.ts      # Hono RPCクライアント
+│   │   │   │   ├── env.ts      # 環境変数
+│   │   │   │   └── params.ts   # useTypedParams, useTypedSearch
+│   │   │   └── components/     # 共通コンポーネント
+│   │   └── test/
+│   └── api/                    # バックエンド（Hono）
+│       ├── src/
+│       │   ├── index.ts
+│       │   ├── routes/
+│       │   ├── repo/           # リポジトリ層
+│       │   │   ├── interface.ts
+│       │   │   ├── d1.ts
+│       │   │   └── memory.ts   # テスト用
+│       │   └── lib/
+│       │       ├── env.ts
+│       │       └── response.ts # okResponse, errorResponse
+│       └── test/
+├── packages/
+│   └── shared/                 # 共通コード
+│       ├── result.ts           # Result型
+│       ├── error.ts            # AppError
+│       └── schema/             # 共通zodスキーマ
+├── bunfig.toml
+└── biome.json
+```
