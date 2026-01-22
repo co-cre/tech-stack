@@ -103,6 +103,110 @@ describe('DELETE /users/:id', () => {
 });
 ```
 
+## 認可テスト
+
+認可は**必ずテストする**。漏れがあるとセキュリティ事故に直結する。
+
+### ロールのテスト
+
+```typescript
+describe('DELETE /users/:id', () => {
+  test('adminロールは削除できる', async () => {
+    const user = await repo.create({ name: 'Alice', email: 'alice@example.com' });
+
+    const res = await app.request(`/users/${user.id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${adminToken}` },
+    });
+
+    expect(res.status).toBe(200);
+  });
+
+  test('userロールは削除できない', async () => {
+    const user = await repo.create({ name: 'Alice', email: 'alice@example.com' });
+
+    const res = await app.request(`/users/${user.id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${userToken}` },
+    });
+
+    expect(res.status).toBe(403);
+    expect((await res.json()).error.code).toBe('FORBIDDEN');
+  });
+});
+```
+
+### リソース所有権のテスト
+
+他人のリソースにアクセスできないことを検証する。
+
+```typescript
+describe('GET /posts/:id', () => {
+  test('自分の投稿は取得できる', async () => {
+    const post = await postRepo.create({
+      title: 'My Post',
+      authorId: currentUser.id
+    });
+
+    const res = await app.request(`/posts/${post.id}`, {
+      headers: { Authorization: `Bearer ${currentUserToken}` },
+    });
+
+    expect(res.status).toBe(200);
+  });
+
+  test('他人の非公開投稿は取得できない', async () => {
+    const otherUser = await userRepo.create({ name: 'Other', email: 'other@example.com' });
+    const post = await postRepo.create({
+      title: 'Private',
+      authorId: otherUser.id,
+      isPublic: false,
+    });
+
+    const res = await app.request(`/posts/${post.id}`, {
+      headers: { Authorization: `Bearer ${currentUserToken}` },
+    });
+
+    expect(res.status).toBe(404); // 存在を隠す
+  });
+});
+
+describe('PATCH /posts/:id', () => {
+  test('他人の投稿は編集できない', async () => {
+    const otherUser = await userRepo.create({ name: 'Other', email: 'other@example.com' });
+    const post = await postRepo.create({
+      title: 'Other Post',
+      authorId: otherUser.id
+    });
+
+    const res = await app.request(`/posts/${post.id}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${currentUserToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ title: 'Hacked!' }),
+    });
+
+    expect(res.status).toBe(403);
+  });
+});
+```
+
+### テスト用ヘルパー
+
+```typescript
+// test/helpers.ts
+export function createTestToken(user: { id: string; role: string }): string {
+  // テスト用の簡易トークン生成
+  return Buffer.from(JSON.stringify(user)).toString('base64');
+}
+
+// beforeEach
+const adminToken = createTestToken({ id: 'admin-1', role: 'admin' });
+const userToken = createTestToken({ id: 'user-1', role: 'user' });
+```
+
 ## インメモリリポジトリ
 
 ```typescript
