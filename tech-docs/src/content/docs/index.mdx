@@ -3,23 +3,54 @@ title: はじめに
 description: 技術スタックの選定理由と実装パターン
 ---
 
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
 **Simple over Easy** - 技術選定の透明性を高め、チーム全体で共有する
 
-## 設計原則
+---
 
-1. **必要になったら足す**: 最初から入れない。辛くなったら足す
-2. **Web標準に寄せる**: 独自APIより標準API
-3. **依存を減らす**: ライブラリは厳選
-4. **IFに対してテスト**: 実装詳細ではなく公開インターフェースをテスト
-5. **外部IOは型で守る**: URLパラメータ、APIレスポンス等はzodでバリデーション
+## このドキュメントの読み方
 
-## コンテンツ
+<CardGrid>
+  <Card title="1. 原則" icon="document">
+    **なぜそうするのか**
 
-| カテゴリ | 内容 |
-|----------|------|
-| [原則](/tech-stack/principles/01-simple-vs-easy/) | Simple over Easy、テストの考え方、依存ポリシー |
-| [技術スタック](/tech-stack/stack/01-overview/) | コア技術、フロントエンド、品質・運用の選定 |
-| [実装パターン](/tech-stack/patterns/01-result/) | Result型、Container/Presentation、リポジトリ層 |
-| [ADR](/tech-stack/decisions/01-bun/) | 技術選定の意思決定記録 |
-| [選定ガイド](/tech-stack/guides/01-db/) | DB、認証、デプロイ先の選定基準 |
-| [AI Context](/tech-stack/ai-context/01-coding-rules/) | AIアシスタント向けコーディング規約 |
+    技術選定・設計判断の基準となる考え方。迷ったときはここに立ち返る。
+  </Card>
+  <Card title="2. スタック" icon="setting">
+    **何を使うか**
+
+    採用技術の一覧と選定理由（ADR）。新しいライブラリを入れる前に確認。
+  </Card>
+  <Card title="3. パターン" icon="pencil">
+    **どう書くか**
+
+    実装の定石集。Result型、API設計、コンポーネント分割など。
+  </Card>
+  <Card title="4. ガイド" icon="open-book">
+    **どう選ぶか**
+
+    案件ごとに異なるDB・認証・デプロイ先の選定基準。
+  </Card>
+</CardGrid>
+
+---
+
+## 各セクションへ
+
+<CardGrid>
+  <LinkCard title="原則" href="/tech-stack/principles/01-simple-vs-easy/" description="Simple vs Easy、必要になったら足す、テストの考え方" />
+  <LinkCard title="スタック" href="/tech-stack/stack/01-overview/" description="Bun、Hono、React Router など採用技術一覧" />
+  <LinkCard title="パターン" href="/tech-stack/patterns/01-result/" description="Result型、Container/Presentation、リポジトリ層" />
+  <LinkCard title="ガイド" href="/tech-stack/guides/01-db/" description="DB・認証・デプロイ先の選定基準" />
+</CardGrid>
+
+---
+
+## 設計原則（サマリー）
+
+1. **必要になったら足す** - 最初から入れない。辛くなったら足す
+2. **Web標準に寄せる** - 独自APIより標準API
+3. **依存を減らす** - ライブラリは厳選
+4. **IFに対してテスト** - 実装詳細ではなく公開インターフェースをテスト
+5. **外部IOは型で守る** - URLパラメータ、APIレスポンス等はzodでバリデーション

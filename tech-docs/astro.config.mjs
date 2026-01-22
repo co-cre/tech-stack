@@ -16,7 +16,13 @@ export default defineConfig({
 			},
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/co-cre/tech-stack' }],
 			sidebar: [
-				{ label: 'はじめに', link: '/' },
+				{
+					label: 'はじめに',
+					items: [
+						{ label: 'このドキュメントについて', link: '/getting-started/01-about' },
+						{ label: 'クイックスタート', link: '/getting-started/02-quickstart' },
+					],
+				},
 				{
 					label: '原則',
 					items: [
@@ -27,18 +33,25 @@ export default defineConfig({
 					],
 				},
 				{
-					label: '技術スタック',
+					label: 'スタック',
 					items: [
 						{ label: '一覧', link: '/stack/01-overview' },
-						{ label: 'コア', link: '/stack/02-core' },
-						{ label: '型・バリデーション', link: '/stack/03-type-validation' },
-						{ label: 'フロントエンド', link: '/stack/04-frontend' },
-						{ label: '品質・運用', link: '/stack/05-quality' },
-						{ label: 'ディレクトリ構成', link: '/stack/06-structure' },
+						{
+							label: '選定理由',
+							collapsed: true,
+							items: [
+								{ label: 'Bun', link: '/decisions/01-bun' },
+								{ label: 'Hono', link: '/decisions/02-hono' },
+								{ label: 'React Router', link: '/decisions/03-react-router' },
+								{ label: 'React Hook Form', link: '/decisions/04-react-hook-form' },
+								{ label: 'Result型', link: '/decisions/05-result-pattern' },
+								{ label: 'date-fns', link: '/decisions/06-date-fns' },
+							],
+						},
 					],
 				},
 				{
-					label: '実装パターン',
+					label: 'パターン',
 					items: [
 						{
 							label: '共通',
@@ -48,36 +61,36 @@ export default defineConfig({
 							],
 						},
 						{
-							label: 'API層',
+							label: 'API',
 							items: [
-								{ label: 'APIレスポンス', link: '/patterns/02-api-response' },
+								{ label: 'レスポンス', link: '/patterns/02-api-response' },
 								{ label: 'リポジトリ層', link: '/patterns/03-repository' },
 							],
 						},
 						{
-							label: 'フロント層',
+							label: 'フロント',
 							items: [
-								{ label: 'URLパラメータの型付け', link: '/patterns/05-url-params' },
+								{ label: 'URLパラメータ', link: '/patterns/05-url-params' },
 								{ label: 'Container / Presentation', link: '/patterns/06-container-presentation' },
+								{ label: 'フォーム', link: '/patterns/08-form' },
 							],
 						},
 						{ label: 'テスト', link: '/patterns/07-testing' },
 					],
 				},
 				{
-					label: '技術選定の記録',
-					collapsed: true,
-					autogenerate: { directory: 'decisions' },
-				},
-				{
 					label: 'ガイド',
-					autogenerate: { directory: 'guides' },
-				},
-				{
-					label: 'AI向けコンテキスト',
 					items: [
-						{ label: 'コード規約', link: '/ai-context/01-coding-rules' },
-						{ label: 'プロンプト', link: '/ai-context/02-prompt' },
+						{ label: 'DB選定', link: '/guides/01-db' },
+						{ label: '認証選定', link: '/guides/02-auth' },
+						{ label: 'デプロイ選定', link: '/guides/03-deploy' },
+						{
+							label: 'AI向けコンテキスト',
+							items: [
+								{ label: 'コード規約', link: '/ai-context/01-coding-rules' },
+								{ label: 'プロンプト', link: '/ai-context/02-prompt' },
+							],
+						},
 					],
 				},
 			],
