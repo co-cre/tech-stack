@@ -34,6 +34,7 @@ export default defineConfig({
 						{ label: 'API', link: '/stack/03-api' },
 						{ label: 'フロントエンド', link: '/stack/04-frontend' },
 						{ label: 'テスト', link: '/stack/05-testing' },
+						{ label: 'インフラ', link: '/stack/06-infrastructure' },
 						{
 							label: '選定理由',
 							collapsed: true,
