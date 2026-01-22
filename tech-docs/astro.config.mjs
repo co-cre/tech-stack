@@ -65,6 +65,10 @@ export default defineConfig({
 							items: [
 								{ label: 'レスポンス', link: '/patterns/02-api-response' },
 								{ label: 'リポジトリ層', link: '/patterns/03-repository' },
+								{ label: 'ドメイン層', link: '/patterns/17-domain' },
+								{ label: 'ユースケース層', link: '/patterns/18-usecase' },
+								{ label: 'トランザクション', link: '/patterns/19-transaction' },
+								{ label: '冪等性', link: '/patterns/20-idempotency' },
 								{ label: 'マイグレーション', link: '/patterns/09-migration' },
 								{ label: 'テスト', link: '/patterns/10-api-testing' },
 								{ label: '認証ミドルウェア', link: '/patterns/12-auth-middleware' },
@@ -118,6 +122,7 @@ export default defineConfig({
 							items: [
 								{ label: 'コード規約', link: '/ai-context/01-coding-rules' },
 								{ label: 'プロンプト', link: '/ai-context/02-prompt' },
+								{ label: 'Coding Agent', link: '/ai-context/03-coding-agent' },
 							],
 						},
 					],
