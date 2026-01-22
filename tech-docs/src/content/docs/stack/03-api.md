@@ -9,7 +9,13 @@ description: バックエンド技術スタック
 apps/api/
 ├── src/
 │   ├── index.ts            # エントリポイント
-│   ├── routes/             # ルート定義
+│   ├── domain/             # ドメイン層
+│   │   ├── user.ts         # Entity
+│   │   └── email.ts        # Value Object
+│   ├── usecase/            # ユースケース層
+│   │   ├── create-user.ts
+│   │   └── update-user.ts
+│   ├── routes/             # ルート定義（薄く）
 │   │   ├── users.ts
 │   │   └── posts.ts
 │   ├── repo/               # リポジトリ層
@@ -18,9 +24,15 @@ apps/api/
 │   │   └── memory.ts       # テスト用インメモリ
 │   └── lib/                # ユーティリティ
 │       ├── env.ts
+│       ├── result.ts       # ok/err
 │       └── response.ts     # okResponse, errorResponse
 └── test/
+    ├── domain/             # ドメイン層テスト
+    ├── usecase/            # ユースケーステスト
+    └── routes/             # E2Eテスト
 ```
+
+**関連パターン**: [ドメイン層](/tech-stack/patterns/17-domain)、[ユースケース層](/tech-stack/patterns/18-usecase)
 
 ## 一覧
 
