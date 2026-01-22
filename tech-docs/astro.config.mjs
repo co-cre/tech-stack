@@ -19,6 +19,7 @@ export default defineConfig({
 						{ label: '必要になったら足す', link: '/principles/02-add-when-needed' },
 						{ label: 'テストの考え方', link: '/principles/03-testing-philosophy' },
 						{ label: '依存ポリシー', link: '/principles/04-dependency-policy' },
+						{ label: '驚き最小の法則', link: '/principles/05-least-surprise' },
 					],
 				},
 				{
@@ -48,6 +49,13 @@ export default defineConfig({
 					label: '実装パターン',
 					items: [
 						{
+							label: 'ディレクトリ',
+							items: [
+								{ label: 'API', link: '/patterns/23-api-directory' },
+								{ label: 'フロントエンド', link: '/patterns/24-frontend-directory' },
+							],
+						},
+						{
 							label: '共通',
 							items: [
 								{ label: 'Result型', link: '/patterns/01-result' },
@@ -59,20 +67,20 @@ export default defineConfig({
 						{
 							label: 'API',
 							items: [
-								{ label: 'レスポンス', link: '/patterns/02-api-response' },
-								{ label: 'リポジトリ層', link: '/patterns/03-repository' },
 								{ label: 'ドメイン層', link: '/patterns/17-domain' },
-								{ label: '状態遷移', link: '/patterns/22-state-transition' },
 								{ label: 'ユースケース層', link: '/patterns/18-usecase' },
+								{ label: 'リポジトリ層', link: '/patterns/03-repository' },
+								{ label: 'レスポンス', link: '/patterns/02-api-response' },
+								{ label: '状態遷移', link: '/patterns/22-state-transition' },
 								{ label: 'トランザクション', link: '/patterns/19-transaction' },
 								{ label: '冪等性', link: '/patterns/20-idempotency' },
-								{ label: 'マイグレーション', link: '/patterns/09-migration' },
-								{ label: 'テスト', link: '/patterns/10-api-testing' },
 								{ label: '認証ミドルウェア', link: '/patterns/12-auth-middleware' },
 								{ label: '認可', link: '/patterns/13-authorization' },
-								{ label: 'エラーコード', link: '/patterns/14-error-codes' },
 								{ label: 'エンドポイント命名', link: '/patterns/15-endpoint-naming' },
+								{ label: 'エラーコード', link: '/patterns/14-error-codes' },
 								{ label: 'バージョニング', link: '/patterns/16-api-versioning' },
+								{ label: 'マイグレーション', link: '/patterns/09-migration' },
+								{ label: 'テスト', link: '/patterns/10-api-testing' },
 							],
 						},
 						{
@@ -84,26 +92,6 @@ export default defineConfig({
 								{ label: 'テスト', link: '/patterns/11-frontend-testing' },
 							],
 						},
-					],
-				},
-				{
-					label: '運用',
-					items: [
-						{ label: 'オブザーバビリティ概要', link: '/operations/00-observability' },
-						{ label: 'ロギング', link: '/operations/01-logging' },
-						{ label: 'エラートラッキング', link: '/operations/02-error-tracking' },
-						{ label: 'モニタリング', link: '/operations/03-monitoring' },
-						{ label: '障害対応', link: '/operations/04-incident-response' },
-						{ label: '依存関係管理', link: '/operations/06-dependency-management' },
-					],
-				},
-				{
-					label: 'セキュリティ',
-					items: [
-						{ label: 'シークレット管理', link: '/security/01-secrets' },
-						{ label: 'CORS/CSP', link: '/security/02-cors-csp' },
-						{ label: '入力検証', link: '/security/03-input-validation' },
-						{ label: 'チェックリスト', link: '/security/04-checklist' },
 					],
 				},
 				{
@@ -122,6 +110,26 @@ export default defineConfig({
 								{ label: 'Coding Agent', link: '/ai-context/03-coding-agent' },
 							],
 						},
+					],
+				},
+				{
+					label: 'セキュリティ',
+					items: [
+						{ label: 'シークレット管理', link: '/security/01-secrets' },
+						{ label: 'CORS/CSP', link: '/security/02-cors-csp' },
+						{ label: '入力検証', link: '/security/03-input-validation' },
+						{ label: 'チェックリスト', link: '/security/04-checklist' },
+					],
+				},
+				{
+					label: '運用',
+					items: [
+						{ label: 'オブザーバビリティ概要', link: '/operations/00-observability' },
+						{ label: 'ロギング', link: '/operations/01-logging' },
+						{ label: 'エラートラッキング', link: '/operations/02-error-tracking' },
+						{ label: 'モニタリング', link: '/operations/03-monitoring' },
+						{ label: '障害対応', link: '/operations/04-incident-response' },
+						{ label: '依存関係管理', link: '/operations/06-dependency-management' },
 					],
 				},
 			],
