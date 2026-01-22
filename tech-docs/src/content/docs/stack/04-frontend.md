@@ -15,6 +15,8 @@ description: フロントエンド技術スタック
 | Tailwind CSS | スタイリング | ユーティリティファースト |
 | shadcn/ui | UIコンポーネント | カスタマイズ性 |
 | date-fns | 日付操作 | [→ 詳細](/tech-stack/decisions/06-date-fns) |
+| Testing Library | コンポーネントテスト | ユーザー視点 |
+| msw | APIモック | Service Worker |
 
 ## Vite
 
@@ -88,3 +90,43 @@ import { ja } from 'date-fns/locale';
 
 format(new Date(), 'yyyy年MM月dd日', { locale: ja });
 ```
+
+## テスト
+
+Testing Library + msw でコンポーネントをテスト。
+
+```typescript
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+
+const server = setupServer(
+  http.get('/api/users', () => {
+    return HttpResponse.json([{ id: '1', name: 'Alice' }]);
+  })
+);
+
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
+test('ユーザー一覧を表示', async () => {
+  render(<UserList />);
+
+  await waitFor(() => {
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+  });
+});
+
+test('ボタンクリックで削除', async () => {
+  render(<UserList />);
+
+  await waitFor(() => screen.getByText('Alice'));
+  await userEvent.click(screen.getByRole('button', { name: '削除' }));
+
+  expect(screen.queryByText('Alice')).not.toBeInTheDocument();
+});
+```
+
+**関連**: [テストパターン](/tech-stack/patterns/07-testing)、[Container / Presentation](/tech-stack/patterns/06-container-presentation)

@@ -10,6 +10,7 @@ description: バックエンド技術スタック
 | Hono | APIフレームワーク | [→ 詳細](/tech-stack/decisions/02-hono) |
 | Drizzle | ORM | 型安全、軽量 |
 | D1 | データベース | Cloudflare統合 |
+| Bun test | テストランナー | Jest互換、高速 |
 
 ## Hono
 
@@ -60,3 +61,37 @@ const users = await db.select().from(usersTable).where(eq(usersTable.id, id));
 Cloudflare のエッジSQLiteデータベース。Workers と統合されており、グローバルに分散配置。
 
 **選定ガイド**: [DB選定](/tech-stack/guides/01-db)
+
+## テスト
+
+リポジトリ層をDIで差し替え、インメモリ実装でテスト。
+
+```typescript
+import { describe, expect, test } from 'bun:test';
+import { createApp } from './index';
+import { InMemoryUserRepo } from './repo/memory';
+
+describe('GET /users/:id', () => {
+  test('存在するユーザーを返す', async () => {
+    const repo = new InMemoryUserRepo([{ id: '1', name: 'Alice' }]);
+    const app = createApp({ userRepo: repo });
+
+    const res = await app.request('/users/1');
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(json.data.name).toBe('Alice');
+  });
+
+  test('存在しないユーザーは404', async () => {
+    const repo = new InMemoryUserRepo([]);
+    const app = createApp({ userRepo: repo });
+
+    const res = await app.request('/users/999');
+
+    expect(res.status).toBe(404);
+  });
+});
+```
+
+**関連**: [テストパターン](/tech-stack/patterns/07-testing)、[リポジトリ層](/tech-stack/patterns/03-repository)
