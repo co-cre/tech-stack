@@ -81,57 +81,107 @@ export const transferUsecase = (deps: { accountRepo: AccountRepo }) => ({
 
 ## 複数ストレージ（D1 + Stripe 等）
 
-DB の分散トランザクションは使わない。代わりに Saga パターンか冪等性で対応。
+DB の分散トランザクションは使わない。**冪等性 + リトライ** で対応する。
 
-### Saga + 補償トランザクション
+:::note[Saga パターンは使わない]
+補償トランザクション（ロールバック処理）は複雑になりがちで、「戻せない操作」（メール送信等）があると破綻する。冪等性で再試行可能にする方がシンプル。
+:::
 
-外部 API 失敗時に DB 変更を戻す。
+### 冪等性 + リトライによる整合性
+
+外部 API を含む処理は、失敗しても安全に再試行できる設計にする。
 
 ```ts
 // usecase/create-subscription.ts
 
 export const createSubscriptionUsecase = (deps: {
-  userRepo: UserRepo
+  subscriptionRepo: SubscriptionRepo
   stripeClient: StripeClient
+  idempotencyRepo: IdempotencyRepo
 }) => ({
-  execute: async (userId: string, planId: string) => {
-    // 1. DB に仮レコード作成（status: pending）
-    const subscription = Subscription.create({ userId, planId, status: 'pending' })
-    await deps.userRepo.createSubscription(subscription)
+  execute: async (userId: string, planId: string, idempotencyKey: string) => {
+    // 1. 処理済みチェック
+    const existing = await deps.idempotencyRepo.find(idempotencyKey)
+    if (existing) {
+      return JSON.parse(existing.response)
+    }
 
-    // 2. 外部 API 呼び出し
+    // 2. DB に pending レコード作成（冪等キーで重複防止）
+    const subscription = await deps.subscriptionRepo.findOrCreate({
+      idempotencyKey,
+      userId,
+      planId,
+      status: 'pending',
+    })
+
+    // 3. 外部 API 呼び出し（Stripe 側も冪等キーを使う）
     const stripeResult = await deps.stripeClient.createSubscription({
       customerId: userId,
       priceId: planId,
+      idempotencyKey,  // Stripe API も冪等性をサポート
     })
 
     if (!stripeResult.ok) {
-      // 3. 失敗時は補償トランザクション（ロールバック）
-      await deps.userRepo.deleteSubscription(subscription.id)
+      // 失敗時は pending のまま。リトライで再実行される
       return err(appError('EXTERNAL_ERROR', 'Stripe subscription failed'))
     }
 
-    // 4. 成功時はステータス更新
-    await deps.userRepo.updateSubscription({
+    // 4. 成功時はステータス更新 + 結果保存
+    const updated = await deps.subscriptionRepo.update({
       ...subscription,
       stripeId: stripeResult.value.id,
       status: 'active',
     })
 
-    return ok(subscription)
+    await deps.idempotencyRepo.save({
+      key: idempotencyKey,
+      response: JSON.stringify(ok(updated)),
+      statusCode: 201,
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    })
+
+    return ok(updated)
   },
 })
 ```
 
-### At-least-once + 冪等性
+**ポイント:**
+- `findOrCreate` で DB 操作も冪等に
+- 外部 API（Stripe 等）にも冪等キーを渡す
+- 失敗時は `pending` のまま残り、リトライで再実行
 
-再試行を前提とした設計。詳細は[冪等性](/tech-stack/patterns/20-idempotency)を参照。
+### リトライの実装
+
+クライアント側またはジョブキューでリトライを実装。
 
 ```ts
-// 概念: 同じリクエストを複数回実行しても結果が同じ
-const result1 = await createOrder.execute({ idempotencyKey: 'order-123', ... })
-const result2 = await createOrder.execute({ idempotencyKey: 'order-123', ... })
-// result1 と result2 は同じ（2回目は保存済みの結果を返す）
+// client/api.ts（クライアント側リトライ）
+
+const createSubscription = async (data: CreateSubscriptionData) => {
+  const idempotencyKey = `sub-${crypto.randomUUID()}`
+
+  // 最大3回リトライ
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const response = await fetch('/api/subscriptions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Idempotency-Key': idempotencyKey,
+      },
+      body: JSON.stringify(data),
+    })
+
+    if (response.ok || response.status < 500) {
+      return response.json()
+    }
+
+    // 5xx エラーはリトライ
+    await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)))
+  }
+
+  throw new Error('Max retries exceeded')
+}
 ```
 
 ## 戦略の使い分け
@@ -139,15 +189,14 @@ const result2 = await createOrder.execute({ idempotencyKey: 'order-123', ... })
 | シナリオ | 戦略 |
 |---------|------|
 | 単一 DB 内の複数テーブル更新 | `batch()` / トランザクション |
-| 外部 API + DB | Saga + 補償トランザクション |
-| 再試行が多い処理 | At-least-once + 冪等性 |
+| 外部 API + DB | 冪等性 + リトライ |
 | 最終的整合性で十分 | イベント駆動 + 非同期処理 |
 
 ## 注意点
 
 - **D1 の制限**: `batch()` は同一リクエスト内のみ。長時間トランザクションは不可
-- **補償の設計**: 「戻す」ロジックが書けない操作（メール送信等）は Saga に不向き
-- **冪等性キー**: ユーザー起点の操作は必ず冪等性キーを使う
+- **冪等キー**: ユーザー起点の操作は必ず冪等性キーを使う
+- **pending の掃除**: 一定期間 pending のままのレコードは定期バッチで処理
 
 ## 関連
 
