@@ -1,0 +1,34 @@
+---
+title: Tech Stack
+description: 技術スタックの選定理由と代替案
+template: splash
+hero:
+  tagline: 技術選定の透明性を高め、チーム全体で共有する
+  actions:
+    - text: Frontend
+      link: /tech-stack/frontend/
+      icon: right-arrow
+    - text: Backend
+      link: /tech-stack/backend/
+      icon: right-arrow
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## カテゴリ
+
+<CardGrid>
+  <Card title="Frontend" icon="laptop">
+    UIフレームワーク、状態管理、スタイリングなど
+  </Card>
+  <Card title="Backend" icon="server">
+    言語、フレームワーク、データベースなど
+  </Card>
+  <Card title="Infrastructure" icon="cloud">
+    クラウド、コンテナ、IaCなど
+  </Card>
+  <Card title="DevOps" icon="setting">
+    CI/CD、監視、ログ管理など
+  </Card>
+</CardGrid>
