@@ -16,13 +16,7 @@ export default defineConfig({
 			},
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/co-cre/tech-stack' }],
 			sidebar: [
-				{
-					label: 'はじめに',
-					items: [
-						{ label: 'このドキュメントについて', link: '/getting-started/01-about' },
-						{ label: 'クイックスタート', link: '/getting-started/02-quickstart' },
-					],
-				},
+				{ label: 'はじめに', link: '/' },
 				{
 					label: '原則',
 					items: [
