@@ -12,7 +12,8 @@ tech-stack/
 │       ├── backend/    # バックエンド技術
 │       ├── infrastructure/  # インフラ
 │       └── devops/     # DevOps
-└── template/           # Webアプリテンプレート (予定)
+└── template/           # Webアプリテンプレート
+    └── event-ticket/   # イベントチケット販売アプリ MVP
 ```
 
 ## 技術ドキュメント (tech-docs)

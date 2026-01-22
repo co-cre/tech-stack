@@ -1,0 +1,19 @@
+name = "event-ticket-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-30"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "event-ticket"
+database_id = "YOUR_D1_DATABASE_ID"
+
+[vars]
+CORS_ORIGIN = "http://localhost:5173"
+
+# secrets (set via wrangler secret put):
+# - FIREBASE_PROJECT_ID
+# - FIREBASE_CLIENT_EMAIL
+# - FIREBASE_PRIVATE_KEY
+# - STRIPE_SECRET_KEY
+# - STRIPE_WEBHOOK_SECRET
