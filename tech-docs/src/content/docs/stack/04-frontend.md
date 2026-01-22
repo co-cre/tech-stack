@@ -6,22 +6,80 @@ description: フロントエンド技術スタック
 ## ディレクトリ構造
 
 ```
-apps/web/  # admin/, lp/ も同様
-├── src/
-│   ├── features/           # 機能単位（Feature-based）
-│   │   └── users/
-│   │       ├── UserList.tsx              # エントリ（Suspense境界）
-│   │       ├── UserList.container.tsx    # データ取得・更新
-│   │       ├── UserList.presentation.tsx # 純粋なUI
-│   │       └── hooks.ts
-│   ├── components/         # 共通UIコンポーネント
-│   ├── lib/                # ユーティリティ
-│   │   ├── api.ts          # Hono RPCクライアント
-│   │   ├── env.ts          # 環境変数
-│   │   └── params.ts       # useTypedParams等
-│   └── routes/             # ページコンポーネント
-└── test/
+apps/web/
+└── src/
+    ├── app.tsx                    # ルーティング定義
+    ├── main.tsx
+    │
+    ├── features/                  # 機能単位
+    │   └── users/                 # kebab-case
+    │       ├── index.ts           # barrel（公開APIのみ）
+    │       ├── Page.tsx           # PascalCase
+    │       ├── UserList.container.tsx
+    │       ├── UserList.presentation.tsx
+    │       └── hooks.ts           # camelCase、API呼び出しもここ
+    │
+    ├── components/
+    │   ├── ui/                    # shadcn/ui
+    │   ├── Header.tsx
+    │   └── Layout.tsx
+    │
+    └── lib/
+        ├── api.ts
+        ├── env.ts
+        └── providers/
+            ├── auth.tsx
+            └── query.tsx
 ```
+
+### 配置ルール
+
+| ディレクトリ | 内容 | 例 |
+|-------------|------|-----|
+| `features/` | 機能ごとにPage.tsx + Container/Presentation | users/, orders/ |
+| `components/ui/` | shadcn/ui（変更しない） | Button, Dialog |
+| `components/` | プロジェクト固有の共通コンポーネント | Header, Layout |
+| `lib/providers/` | グローバル状態（認証、QueryClient等） | auth, query |
+
+### 命名規則
+
+| 対象 | 規則 | 例 |
+|------|------|-----|
+| ディレクトリ | kebab-case | user-settings/, order-history/ |
+| コンポーネント | PascalCase.tsx | UserList.tsx, OrderForm.tsx |
+| 非コンポーネント | camelCase.ts | hooks.ts, utils.ts |
+
+### Barrel export
+
+featureルートのみ `index.ts` を作成。公開したいものだけre-export。
+
+```typescript
+// features/users/index.ts
+export { Page } from './Page';
+export { useUsers } from './hooks';
+```
+
+### API呼び出し
+
+`features/hooks.ts` 内で useQuery を直書き。共有が必要になったら `lib/api/` に昇格。
+
+```typescript
+// features/users/hooks.ts
+export const useUsers = () => {
+  return useQuery({
+    queryKey: ['users'],
+    queryFn: () => api.users.$get(),
+  });
+};
+```
+
+### 型定義
+
+Hono RPC前提で別途定義ファイルは不要。バックエンドの型がそのまま効く。
+
+フロント固有の型が必要な場合:
+- 小さければ各ファイル内
+- 共通なら `lib/types.ts`
 
 ## 一覧
 
@@ -118,3 +176,13 @@ format(new Date(), 'yyyy年MM月dd日', { locale: ja });
 - UIは目視確認で十分
 
 **詳細**: [フロントエンドテスト](/tech-stack/patterns/11-frontend-testing)
+
+## レビュー
+
+GitHub Actionsで実行する。
+
+| ツール | 用途 | 状態 |
+|--------|------|------|
+| Claude Code | AIコードレビュー | TBD |
+| Codex | AIコードレビュー | TBD |
+| CodeRabbit | PR自動レビュー | TBD |
