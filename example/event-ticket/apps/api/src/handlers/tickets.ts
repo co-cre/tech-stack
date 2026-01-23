@@ -1,18 +1,15 @@
 import { events, ticketTypes, tickets } from 'db/schema'
 import { and, eq } from 'drizzle-orm'
-import { Hono } from 'hono'
+import type { Context } from 'hono'
 import { z } from 'zod'
 import { getDb } from '../lib/db'
-import { authMiddleware } from '../middleware/auth'
 
-type AuthVariables = {
-	firebaseUser: { uid: string; email: string; name?: string }
+type AuthEnv = {
+	Bindings: Env
+	Variables: { firebaseUser: { uid: string; email: string; name?: string } }
 }
 
-export const ticketsRoutes = new Hono<{ Bindings: Env; Variables: AuthVariables }>()
-
-// GET /tickets - 保有チケット一覧
-ticketsRoutes.get('/', authMiddleware, async (c) => {
+export const listTickets = async (c: Context<AuthEnv>) => {
 	const db = getDb(c)
 	const firebaseUser = c.get('firebaseUser')
 
@@ -21,7 +18,6 @@ ticketsRoutes.get('/', authMiddleware, async (c) => {
 		orderBy: (tickets, { desc }) => [desc(tickets.createdAt)],
 	})
 
-	// 各チケットに紐づくイベント情報を取得
 	const ticketsWithDetails = await Promise.all(
 		ticketList.map(async (ticket) => {
 			const ticketType = await db.query.ticketTypes.findFirst({
@@ -44,10 +40,9 @@ ticketsRoutes.get('/', authMiddleware, async (c) => {
 	)
 
 	return c.json(ticketsWithDetails.filter(Boolean))
-})
+}
 
-// GET /tickets/:id - チケット詳細
-ticketsRoutes.get('/:id', authMiddleware, async (c) => {
+export const getTicket = async (c: Context<AuthEnv>) => {
 	const db = getDb(c)
 	const firebaseUser = c.get('firebaseUser')
 	const id = c.req.param('id')
@@ -82,14 +77,13 @@ ticketsRoutes.get('/:id', authMiddleware, async (c) => {
 		eventStartsAt: event?.startsAt,
 		ticketTypeName: ticketType.name,
 	})
-})
+}
 
 const verifySchema = z.object({
 	qrToken: z.string(),
 })
 
-// POST /tickets/verify - 入場確認
-ticketsRoutes.post('/verify', authMiddleware, async (c) => {
+export const verifyTicket = async (c: Context<AuthEnv>) => {
 	const db = getDb(c)
 
 	const body = await c.req.json()
@@ -125,7 +119,6 @@ ticketsRoutes.post('/verify', authMiddleware, async (c) => {
 		})
 	}
 
-	// チケットを使用済みに更新
 	await db
 		.update(tickets)
 		.set({
@@ -135,7 +128,6 @@ ticketsRoutes.post('/verify', authMiddleware, async (c) => {
 		})
 		.where(eq(tickets.id, ticket.id))
 
-	// チケット情報を取得して返す
 	const ticketType = await db.query.ticketTypes.findFirst({
 		where: eq(ticketTypes.id, ticket.ticketTypeId),
 	})
@@ -154,4 +146,4 @@ ticketsRoutes.post('/verify', authMiddleware, async (c) => {
 			ticketTypeName: ticketType?.name || '',
 		},
 	})
-})
+}

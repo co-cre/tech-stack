@@ -1,11 +1,8 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
-import { authRoutes } from './routes/auth'
-import { eventsRoutes } from './routes/events'
-import { ordersRoutes } from './routes/orders'
-import { ticketsRoutes } from './routes/tickets'
-import { webhooksRoutes } from './routes/webhooks'
+import * as handlers from './handlers'
+import { authMiddleware } from './middleware/auth'
 
 const app = new Hono<{ Bindings: Env }>()
 
@@ -18,13 +15,22 @@ app.use(
 	}),
 )
 
+// Public
 app.get('/', (c) => c.json({ message: 'Event Ticket API' }))
+app.get('/events', handlers.listEvents)
+app.get('/events/:id', handlers.getEvent)
 
-app.route('/auth', authRoutes)
-app.route('/events', eventsRoutes)
-app.route('/orders', ordersRoutes)
-app.route('/tickets', ticketsRoutes)
-app.route('/webhooks', webhooksRoutes)
+// Auth required
+app.post('/auth/sync', authMiddleware, handlers.syncUser)
+app.get('/auth/me', authMiddleware, handlers.getMe)
+app.post('/orders', authMiddleware, handlers.createOrder)
+app.get('/orders', authMiddleware, handlers.listOrders)
+app.get('/tickets', authMiddleware, handlers.listTickets)
+app.get('/tickets/:id', authMiddleware, handlers.getTicket)
+app.post('/tickets/verify', authMiddleware, handlers.verifyTicket)
+
+// Webhook
+app.post('/webhooks/stripe', handlers.stripeWebhook)
 
 app.onError((err, c) => {
 	console.error(err)

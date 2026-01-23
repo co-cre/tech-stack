@@ -1,16 +1,14 @@
 import { events, orders, ticketTypes, users } from 'db/schema'
-import { and, eq } from 'drizzle-orm'
-import { Hono } from 'hono'
+import { eq } from 'drizzle-orm'
+import type { Context } from 'hono'
 import { z } from 'zod'
 import { getDb } from '../lib/db'
 import { getStripe } from '../lib/stripe'
-import { authMiddleware } from '../middleware/auth'
 
-type AuthVariables = {
-	firebaseUser: { uid: string; email: string; name?: string }
+type AuthEnv = {
+	Bindings: Env
+	Variables: { firebaseUser: { uid: string; email: string; name?: string } }
 }
-
-export const ordersRoutes = new Hono<{ Bindings: Env; Variables: AuthVariables }>()
 
 const createOrderSchema = z.object({
 	ticketTypeId: z.string(),
@@ -18,8 +16,7 @@ const createOrderSchema = z.object({
 	idempotencyKey: z.string().optional(),
 })
 
-// POST /orders - 注文作成
-ordersRoutes.post('/', authMiddleware, async (c) => {
+export const createOrder = async (c: Context<AuthEnv>) => {
 	const db = getDb(c)
 	const stripe = getStripe(c.env.STRIPE_SECRET_KEY)
 	const firebaseUser = c.get('firebaseUser')
@@ -32,13 +29,11 @@ ordersRoutes.post('/', authMiddleware, async (c) => {
 
 	const { ticketTypeId, quantity, idempotencyKey } = parsed.data
 
-	// 冪等性チェック
 	if (idempotencyKey) {
 		const existingOrder = await db.query.orders.findFirst({
 			where: eq(orders.idempotencyKey, idempotencyKey),
 		})
 		if (existingOrder) {
-			// 既存の注文がある場合、その情報を返す
 			if (existingOrder.stripeSessionId) {
 				const session = await stripe.checkout.sessions.retrieve(existingOrder.stripeSessionId)
 				return c.json({ checkoutUrl: session.url })
@@ -47,7 +42,6 @@ ordersRoutes.post('/', authMiddleware, async (c) => {
 		}
 	}
 
-	// チケット種別と在庫チェック
 	const ticketType = await db.query.ticketTypes.findFirst({
 		where: eq(ticketTypes.id, ticketTypeId),
 	})
@@ -61,7 +55,6 @@ ordersRoutes.post('/', authMiddleware, async (c) => {
 		return c.json({ error: 'Not enough tickets available', remaining }, 400)
 	}
 
-	// イベント取得
 	const event = await db.query.events.findFirst({
 		where: eq(events.id, ticketType.eventId),
 	})
@@ -70,7 +63,6 @@ ordersRoutes.post('/', authMiddleware, async (c) => {
 		return c.json({ error: 'Event not found' }, 404)
 	}
 
-	// ユーザー取得
 	const user = await db.query.users.findFirst({
 		where: eq(users.id, firebaseUser.uid),
 	})
@@ -81,7 +73,6 @@ ordersRoutes.post('/', authMiddleware, async (c) => {
 
 	const totalAmount = ticketType.price * quantity
 
-	// 注文作成
 	const orderId = crypto.randomUUID()
 	await db.insert(orders).values({
 		id: orderId,
@@ -93,7 +84,6 @@ ordersRoutes.post('/', authMiddleware, async (c) => {
 		idempotencyKey,
 	})
 
-	// Stripe Checkout Session作成
 	const session = await stripe.checkout.sessions.create({
 		payment_method_types: ['card'],
 		line_items: [
@@ -118,17 +108,15 @@ ordersRoutes.post('/', authMiddleware, async (c) => {
 		},
 	})
 
-	// Session IDを保存
 	await db
 		.update(orders)
 		.set({ stripeSessionId: session.id, updatedAt: new Date() })
 		.where(eq(orders.id, orderId))
 
 	return c.json({ checkoutUrl: session.url })
-})
+}
 
-// GET /orders - 購入履歴
-ordersRoutes.get('/', authMiddleware, async (c) => {
+export const listOrders = async (c: Context<AuthEnv>) => {
 	const db = getDb(c)
 	const firebaseUser = c.get('firebaseUser')
 
@@ -137,7 +125,6 @@ ordersRoutes.get('/', authMiddleware, async (c) => {
 		orderBy: (orders, { desc }) => [desc(orders.createdAt)],
 	})
 
-	// 各注文に紐づくイベント情報を取得
 	const ordersWithDetails = await Promise.all(
 		orderList.map(async (order) => {
 			const ticketType = await db.query.ticketTypes.findFirst({
@@ -158,4 +145,4 @@ ordersRoutes.get('/', authMiddleware, async (c) => {
 	)
 
 	return c.json(ordersWithDetails)
-})
+}
