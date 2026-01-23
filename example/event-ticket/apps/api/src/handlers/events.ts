@@ -1,12 +1,9 @@
 import { events, ticketTypes } from 'db/schema'
 import { eq } from 'drizzle-orm'
-import { Hono } from 'hono'
+import type { Context } from 'hono'
 import { getDb } from '../lib/db'
 
-export const eventsRoutes = new Hono<{ Bindings: Env }>()
-
-// GET /events - イベント一覧
-eventsRoutes.get('/', async (c) => {
+export const listEvents = async (c: Context<{ Bindings: Env }>) => {
 	const db = getDb(c)
 
 	const eventList = await db.query.events.findMany({
@@ -15,10 +12,9 @@ eventsRoutes.get('/', async (c) => {
 	})
 
 	return c.json(eventList)
-})
+}
 
-// GET /events/:id - イベント詳細
-eventsRoutes.get('/:id', async (c) => {
+export const getEvent = async (c: Context<{ Bindings: Env }>) => {
 	const db = getDb(c)
 	const id = c.req.param('id')
 
@@ -38,4 +34,4 @@ eventsRoutes.get('/:id', async (c) => {
 		...event,
 		ticketTypes: types,
 	})
-})
+}

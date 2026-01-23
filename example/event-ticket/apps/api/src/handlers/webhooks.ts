@@ -1,14 +1,11 @@
 import { orders, ticketTypes, tickets } from 'db/schema'
 import { eq } from 'drizzle-orm'
-import { Hono } from 'hono'
+import type { Context } from 'hono'
 import type Stripe from 'stripe'
 import { getDb } from '../lib/db'
 import { getStripe } from '../lib/stripe'
 
-export const webhooksRoutes = new Hono<{ Bindings: Env }>()
-
-// POST /webhooks/stripe - Stripe Webhook
-webhooksRoutes.post('/stripe', async (c) => {
+export const stripeWebhook = async (c: Context<{ Bindings: Env }>) => {
 	const stripe = getStripe(c.env.STRIPE_SECRET_KEY)
 	const db = getDb(c)
 
@@ -36,7 +33,6 @@ webhooksRoutes.post('/stripe', async (c) => {
 			return c.json({ error: 'Missing orderId' }, 400)
 		}
 
-		// 注文取得
 		const order = await db.query.orders.findFirst({
 			where: eq(orders.id, orderId),
 		})
@@ -46,12 +42,10 @@ webhooksRoutes.post('/stripe', async (c) => {
 			return c.json({ error: 'Order not found' }, 404)
 		}
 
-		// 既にpaidなら処理済み
 		if (order.status === 'paid') {
 			return c.json({ received: true })
 		}
 
-		// 注文をpaidに更新
 		await db
 			.update(orders)
 			.set({
@@ -61,7 +55,6 @@ webhooksRoutes.post('/stripe', async (c) => {
 			})
 			.where(eq(orders.id, orderId))
 
-		// チケット種別の販売数を更新
 		await db
 			.update(ticketTypes)
 			.set({
@@ -76,7 +69,6 @@ webhooksRoutes.post('/stripe', async (c) => {
 			})
 			.where(eq(ticketTypes.id, order.ticketTypeId))
 
-		// チケット発行
 		const ticketInserts = []
 		for (let i = 0; i < order.quantity; i++) {
 			ticketInserts.push({
@@ -92,4 +84,4 @@ webhooksRoutes.post('/stripe', async (c) => {
 	}
 
 	return c.json({ received: true })
-})
+}
